@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{4925A630-B079-445d-BCD4-3A9C94FE9307}") = "fsharp-test", "fsharp-test\fsharp-test.fsproj", "{078E316D-7894-493E-A448-509843D305AC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|iPhoneSimulator = Debug|iPhoneSimulator
+		Release|iPhoneSimulator = Release|iPhoneSimulator
+		Debug|iPhone = Debug|iPhone
+		Release|iPhone = Release|iPhone
+		Ad-Hoc|iPhone = Ad-Hoc|iPhone
+		AppStore|iPhone = AppStore|iPhone
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{078E316D-7894-493E-A448-509843D305AC}.Ad-Hoc|iPhone.ActiveCfg = Ad-Hoc|iPhone
+		{078E316D-7894-493E-A448-509843D305AC}.Ad-Hoc|iPhone.Build.0 = Ad-Hoc|iPhone
+		{078E316D-7894-493E-A448-509843D305AC}.AppStore|iPhone.ActiveCfg = AppStore|iPhone
+		{078E316D-7894-493E-A448-509843D305AC}.AppStore|iPhone.Build.0 = AppStore|iPhone
+		{078E316D-7894-493E-A448-509843D305AC}.Debug|iPhone.ActiveCfg = Debug|iPhone
+		{078E316D-7894-493E-A448-509843D305AC}.Debug|iPhone.Build.0 = Debug|iPhone
+		{078E316D-7894-493E-A448-509843D305AC}.Debug|iPhoneSimulator.ActiveCfg = Debug|iPhoneSimulator
+		{078E316D-7894-493E-A448-509843D305AC}.Debug|iPhoneSimulator.Build.0 = Debug|iPhoneSimulator
+		{078E316D-7894-493E-A448-509843D305AC}.Release|iPhone.ActiveCfg = Release|iPhone
+		{078E316D-7894-493E-A448-509843D305AC}.Release|iPhone.Build.0 = Release|iPhone
+		{078E316D-7894-493E-A448-509843D305AC}.Release|iPhoneSimulator.ActiveCfg = Release|iPhoneSimulator
+		{078E316D-7894-493E-A448-509843D305AC}.Release|iPhoneSimulator.Build.0 = Release|iPhoneSimulator
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = fsharp-test\fsharp-test.fsproj
+	EndGlobalSection
+EndGlobal
