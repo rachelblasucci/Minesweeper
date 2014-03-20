@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{4925A630-B079-445d-BCD4-3A9C94FE9307}") = "Minesweeper", "Minesweeper.fsproj", "{AF269F30-D3A5-41B0-9220-4348B0268E07}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|iPhoneSimulator = Debug|iPhoneSimulator
+		Release|iPhoneSimulator = Release|iPhoneSimulator
+		Debug|iPhone = Debug|iPhone
+		Release|iPhone = Release|iPhone
+		Ad-Hoc|iPhone = Ad-Hoc|iPhone
+		AppStore|iPhone = AppStore|iPhone
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AF269F30-D3A5-41B0-9220-4348B0268E07}.Ad-Hoc|iPhone.ActiveCfg = Ad-Hoc|iPhone
+		{AF269F30-D3A5-41B0-9220-4348B0268E07}.Ad-Hoc|iPhone.Build.0 = Ad-Hoc|iPhone
+		{AF269F30-D3A5-41B0-9220-4348B0268E07}.AppStore|iPhone.ActiveCfg = AppStore|iPhone
+		{AF269F30-D3A5-41B0-9220-4348B0268E07}.AppStore|iPhone.Build.0 = AppStore|iPhone
+		{AF269F30-D3A5-41B0-9220-4348B0268E07}.Debug|iPhone.ActiveCfg = Debug|iPhone
+		{AF269F30-D3A5-41B0-9220-4348B0268E07}.Debug|iPhone.Build.0 = Debug|iPhone
+		{AF269F30-D3A5-41B0-9220-4348B0268E07}.Debug|iPhoneSimulator.ActiveCfg = Debug|iPhoneSimulator
+		{AF269F30-D3A5-41B0-9220-4348B0268E07}.Debug|iPhoneSimulator.Build.0 = Debug|iPhoneSimulator
+		{AF269F30-D3A5-41B0-9220-4348B0268E07}.Release|iPhone.ActiveCfg = Release|iPhone
+		{AF269F30-D3A5-41B0-9220-4348B0268E07}.Release|iPhone.Build.0 = Release|iPhone
+		{AF269F30-D3A5-41B0-9220-4348B0268E07}.Release|iPhoneSimulator.ActiveCfg = Release|iPhoneSimulator
+		{AF269F30-D3A5-41B0-9220-4348B0268E07}.Release|iPhoneSimulator.Build.0 = Release|iPhoneSimulator
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = Minesweeper.fsproj
+	EndGlobalSection
+EndGlobal

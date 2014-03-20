@@ -3,14 +3,14 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">iPhoneSimulator</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{078E316D-7894-493E-A448-509843D305AC}</ProjectGuid>
+    <ProjectGuid>{AF269F30-D3A5-41B0-9220-4348B0268E07}</ProjectGuid>
     <ProjectTypeGuids>{6BC8ED88-2882-458C-8E55-DFD12B67127B};{4925A630-B079-445D-BCD4-3A9C94FE9307}</ProjectTypeGuids>
     <OutputType>Exe</OutputType>
-    <RootNamespace>fsharptest</RootNamespace>
+    <RootNamespace>Minesweeper</RootNamespace>
     <IPhoneResourcePrefix>Resources</IPhoneResourcePrefix>
-    <AssemblyName>fsharptest</AssemblyName>
+    <AssemblyName>Minesweeper</AssemblyName>
+    <ProductVersion>12.0.0</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhoneSimulator' ">
     <DebugSymbols>true</DebugSymbols>
@@ -102,9 +102,6 @@
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
     <Reference Include="monotouch" />
-    <Reference Include="FSharp.Core">
-      <HintPath>..\..\..\..\..\..\..\..\Library\Frameworks\Mono.framework\Versions\Current\lib\mono\4.5\FSharp.Core.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\" />
@@ -113,18 +110,15 @@
     <None Include="Info.plist" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FinalViewController.fs" />
-    <Compile Include="FirstViewController.fs" />
+    <Compile Include="Utils.fs" />
+    <Compile Include="MinesweeperViewController.fs" />
     <Compile Include="AppDelegate.fs" />
   </ItemGroup>
-  <Import Project="$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.0\Framework\v4.0\Microsoft.FSharp.Targets" />
+  <Import Project="$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.1\Framework\v4.0\Microsoft.FSharp.Targets" />
   <ItemGroup>
-    <BundleResource Include="Resources\Default-568h%402x.png" />
-    <BundleResource Include="Resources\fsharp-test\Images.xcassets\AppIcon.appiconset\Contents.json" />
-    <BundleResource Include="Resources\fsharp-test\Images.xcassets\LaunchImage.launchimage\Contents.json" />
-    <BundleResource Include="Resources\fsharp-test\Images.xcassets\LaunchImage.launchimage\Default-568h%402x.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <InterfaceDefinition Include="firstview.storyboard" />
+    <BundleResource Include="Resources\Bomb.png" />
+    <BundleResource Include="Resources\Flag.png" />
+    <BundleResource Include="Bomb.png" />
+    <BundleResource Include="Flag.png" />
   </ItemGroup>
 </Project>

@@ -5,8 +5,9 @@ open System.Drawing
 open MonoTouch.Foundation
 open MonoTouch.UIKit
 
+[<Register ("FinalViewController")>]
 type FinalViewController() = 
-    inherit UIViewController()
+    inherit UIViewController("FinalViewController", null)
 
     override this.DidReceiveMemoryWarning () = 
         // Releases the view if it doesn't have a superview.
