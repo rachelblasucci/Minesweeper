@@ -14,7 +14,6 @@ type MinesweeperViewController () =
     let mutable actionMode = ActionMode.Digging
 
     override this.ViewDidLoad () =
-
         let rec playGame() =
             let mines, neighbors = setMinesAndGetNeighbors
 
@@ -47,10 +46,12 @@ type MinesweeperViewController () =
                 b.TouchUpInside.AddHandler MinesweeperButtonClicked
                 b
 
-            let CreateButtonView i j = 
-                this.View.Add (getButton i j)
+            let CreateButtonView (view:UIView) i j = 
+                let b = (getButton i j)
+                view.Add b
+                b.BringSubviewToFront
 
-            let CreateSliderView = 
+            let CreateSliderView (view:UIView) = 
                 let s = new UISegmentedControl(new RectangleF((float32)50.f, (float32)Height*35.f+50.f, (float32)200.f, (float32)50.f))
 
                 let HandleSegmentChanged = 
@@ -67,10 +68,14 @@ type MinesweeperViewController () =
                 s.SelectedSegment <- 1
                 actionMode <- ActionMode.Digging
                 s.ValueChanged.AddHandler HandleSegmentChanged
-                this.View.Add s
-
-            let boardTiles = Array2D.init Width Height CreateButtonView
-            CreateSliderView
+                view.Add s
+            
+            if (this.View.Subviews.Length > 0) then
+                this.View.Subviews.[0].RemoveFromSuperview()
+            let v = new UIView(new RectangleF(0.f, 0.f, this.View.Bounds.Width, this.View.Bounds.Height))
+            let boardTiles = Array2D.init Width Height (CreateButtonView v)
+            CreateSliderView v
+            this.View.AddSubview v
 
         playGame()
         base.ViewDidLoad ()
