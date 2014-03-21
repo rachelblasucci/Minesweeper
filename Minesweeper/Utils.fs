@@ -13,7 +13,6 @@ module utils =
     type ActionMode =
         | Flagging
         | Digging
-        | GameOver
 
     type MinesweeperButton(isMine, countSurrounding) = 
         inherit UIButton() with
