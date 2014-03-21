@@ -10,6 +10,10 @@ module utils =
     let Height = 8 
     let NumberOfMines = 12
 
+    type ActionMode =
+        | Flagging
+        | Digging
+
     type MinesweeperButton(isMine, countSurrounding) = 
         inherit UIButton() with
         member x.SurroundingMines : int = countSurrounding
@@ -46,22 +50,4 @@ module utils =
         
         let countNeighbors = Array2D.init Width Height addNeighbors
         mines, countNeighbors
-    
-//    let rows = 
-//        let rec createRows length value = 
-//            if (value = Height) then
-//                [||]
-//            else 
-//                Array.create length value 
-//                    |> Array.append (createRows length (value+1))
-//        createRows Width 0 
-//
-//    let columns = 
-//        let rec createColumns height value = 
-//            if (value = Width) then
-//                [||]
-//            else 
-//                [|0..height-1|]
-//                    |> Array.append (createColumns height (value+1))
-//        createColumns Height 0 
-
+ 
