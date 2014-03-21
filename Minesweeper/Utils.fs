@@ -14,12 +14,15 @@ module utils =
         | Flagging
         | Digging
 
+
     type MinesweeperButton(isMine, countSurrounding) = 
-        inherit UIButton() with
+        inherit UIButton() 
+        let mutable activated = false
         member x.SurroundingMines : int = countSurrounding
         member x.IsMine : bool = isMine
-        member x.Activated : bool = false
-        member x.ShowFlag : bool = false
+        member x.Activated 
+                with get () = activated
+                and set value = activated <- value
 
     let mutable countMines = 0
     let setMinesAndGetNeighbors =  
