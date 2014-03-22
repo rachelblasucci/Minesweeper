@@ -24,6 +24,15 @@ module utils =
         member x.SurroundingMines : int = countSurrounding
         member x.IsMine : bool = isMine
 
+    let filterIndices i j = 
+        let indices = [|(i-1,j-1);(i-1,j);(i-1,j+1);(i,j-1);(i,j+1);(i+1,j-1);(i+1,j);(i+1,j+1)|]
+
+        let filterOutsideBounds = function 
+                                    | x, y when x < 0 || y < 0 || x > Width-1 || y > Height-1 -> false
+                                    | _,_ -> true
+
+        Array.filter filterOutsideBounds indices
+
     let mutable countMines = 0
     let setMinesAndGetNeighbors =  
         let mines = 
@@ -31,7 +40,7 @@ module utils =
             let SetIsMine() = 
                 if (countMines >= NumberOfMines) then
                     false
-                elif (rand() > 0.75) then
+                elif (rand() > 0.8) then
                     countMines <- countMines + 1
                     true
                 else
@@ -40,13 +49,7 @@ module utils =
 
         let countNeighbors = 
             let addNeighbors i j = 
-                let indices = [|(i-1,j-1);(i-1,j);(i-1,j+1);(i,j-1);(i,j+1);(i+1,j-1);(i+1,j);(i+1,j+1)|]
-
-                let filterOutsideBounds = function 
-                                            | x, y when x < 0 || y < 0 || x > Width-1 || y > Height-1 -> false
-                                            | _,_ -> true
-
-                Array.filter filterOutsideBounds indices
+                filterIndices i j 
                     |> Array.map (fun (x,y) -> mines.[x,y])
                     |> Array.map (fun x -> match x with | true -> 1 | false -> 0) 
                     |> Array.sum

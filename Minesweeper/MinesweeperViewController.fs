@@ -39,7 +39,7 @@ type MinesweeperViewController () =
                             ms.SetImage(UIImage.FromBundle("Flag.png"), UIControlState.Normal)
                     elif (actionMode = Digging && ms.IsMine) then //if you're digging, and you found a mine: death! :( 
                         ms.BackgroundColor <- UIColor.Red
-                        (new UIAlertView(":(", "YOU LOSE!", null, "Okay", "Cancel")).Show()
+                        (new UIAlertView(":(", "YOU LOSE!", null, "Okay", null)).Show()
                         //todo: vibrate phone?
                         playGame()
                     else // you're digging, clear the cell
