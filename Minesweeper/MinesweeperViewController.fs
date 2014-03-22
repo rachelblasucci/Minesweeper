@@ -28,7 +28,6 @@ type MinesweeperViewController () =
 //                if (boardTiles.[i,j].SurroundingMines = 0) then
 //                    
                     //clear more
-                
 
             let MinesweeperButtonClicked = 
                 new EventHandler(fun sender eventargs -> 
@@ -36,25 +35,26 @@ type MinesweeperViewController () =
                     if (actionMode = Flagging) then //flag or unflag cell
                         if (ms.CurrentImage = UIImage.FromBundle("Flag.png")) then
                             ms.SetImage(null, UIControlState.Normal)
-                            ms.Activated <- false
                         else
                             ms.SetImage(UIImage.FromBundle("Flag.png"), UIControlState.Normal)
-                            ms.Activated <- true
                     elif (actionMode = Digging && ms.IsMine) then //if you're digging, and you found a mine: death! :( 
                         ms.BackgroundColor <- UIColor.Red
                         (new UIAlertView(":(", "YOU LOSE!", null, "Okay", "Cancel")).Show()
                         //todo: vibrate phone?
                         playGame()
                     else // you're digging, clear the cell
-                        ms.SetImage(null, UIControlState.Normal)
-                        ms.BackgroundColor <- UIColor.DarkGray
-                        ms.Activated <- true
-                        if (ms.SurroundingMines = 0) then
-                            ms.SetTitle("", UIControlState.Normal)
+                        let v = ms.Superview
+                        v.WillRemoveSubview(ms)
+                        let ub = new UncoveredButton(ms.IsMine, ms.SurroundingMines)
+                        ub.Frame <- ms.Frame
+                        ub.BackgroundColor <- UIColor.DarkGray
+                        if (ub.SurroundingMines = 0) then
+                            ub.SetTitle("", UIControlState.Normal)
                             //todo: keep clearing all 0 cells
                         else 
-                            ms.SetTitle(ms.SurroundingMines.ToString(), UIControlState.Normal)
+                            ub.SetTitle(ms.SurroundingMines.ToString(), UIControlState.Normal)
                         //todo: if all non-mine cells are cleared, you win.
+                        v.AddSubview ub
                     )
 
             let CreateSliderView = 

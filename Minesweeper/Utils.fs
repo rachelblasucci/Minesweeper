@@ -16,12 +16,13 @@ module utils =
 
     type MinesweeperButton(isMine, countSurrounding) = 
         inherit UIButton() 
-        let mutable activated = false
         member x.SurroundingMines : int = countSurrounding
         member x.IsMine : bool = isMine
-        member x.Activated 
-                with get () = activated
-                and set value = activated <- value
+
+    type UncoveredButton(isMine, countSurrounding) = 
+        inherit UIButton() 
+        member x.SurroundingMines : int = countSurrounding
+        member x.IsMine : bool = isMine
 
     let mutable countMines = 0
     let setMinesAndGetNeighbors =  
