@@ -22,6 +22,14 @@ type MinesweeperViewController () =
                 b.Frame <- new RectangleF((float32)i*35.f+25.f, (float32)j*35.f+25.f, (float32)32.f, (float32)32.f)
                 b
 
+            let boardTiles = Array2D.init Width Height CreateButton
+
+//            let rec ClearTiles i j = 
+//                if (boardTiles.[i,j].SurroundingMines = 0) then
+//                    
+                    //clear more
+                
+
             let MinesweeperButtonClicked = 
                 new EventHandler(fun sender eventargs -> 
                     let ms = sender :?> MinesweeperButton
@@ -46,7 +54,7 @@ type MinesweeperViewController () =
                             //todo: keep clearing all 0 cells
                         else 
                             ms.SetTitle(ms.SurroundingMines.ToString(), UIControlState.Normal)
-                        //todo: if all cells are activated, you win. 
+                        //todo: if all non-mine cells are cleared, you win.
                     )
 
             let CreateSliderView = 
@@ -70,10 +78,11 @@ type MinesweeperViewController () =
             if (this.View.Subviews.Length > 0) then this.View.Subviews.[0].RemoveFromSuperview()
 
             let v = new UIView(new RectangleF(0.f, 0.f, this.View.Bounds.Width, this.View.Bounds.Height))
-            let boardTiles = Array2D.init Width Height CreateButton
-                                |> Array2D.map (fun b -> b.BackgroundColor <- UIColor.LightGray; b)
-                                |> Array2D.map (fun b -> b.TouchUpInside.AddHandler MinesweeperButtonClicked; b)
-                                |> Array2D.map (fun b -> v.AddSubview b; b)
+            boardTiles 
+                |> Array2D.map (fun b -> b.BackgroundColor <- UIColor.LightGray; b)
+                |> Array2D.map (fun b -> b.TouchUpInside.AddHandler MinesweeperButtonClicked; b)
+                |> Array2D.map (fun b -> v.AddSubview b; b)
+
             v.AddSubview CreateSliderView
             this.View.AddSubview v
 
