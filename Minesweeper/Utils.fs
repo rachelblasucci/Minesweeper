@@ -66,7 +66,7 @@ module utils =
         let mines, neighbors = setMinesAndGetNeighbors()
 
         let CreateButton i j = 
-            MinesweeperButton(mines.[i,j], neighbors.[i,j], (float32)32.f, (float32)32.f, (float32)i*35.f+25.f, (float32)j*35.f+25.f)
+            new MinesweeperButton(mines.[i,j], neighbors.[i,j], (float32)32.f, (float32)32.f, (float32)i*35.f+25.f, (float32)j*35.f+25.f)
 
         let boardTiles = Array2D.init Width Height CreateButton
         boardTiles
