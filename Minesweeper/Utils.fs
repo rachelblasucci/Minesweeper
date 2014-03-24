@@ -23,14 +23,9 @@ module utils =
         member m.X : float32 = x
         member m.Y : float32 = y
 
-    type UncoveredButton(isMine, countSurrounding, width, height, x, y) = 
+    type UncoveredButton(countSurrounding) = 
         inherit UIButton() 
         member u.SurroundingMines : int = countSurrounding
-        member u.IsMine : bool = isMine
-        member u.Width : float32 = width
-        member u.Height : float32 = height
-        member u.X : float32 = x
-        member u.Y : float32 = y
 
     let filterIndices i j = 
         let indices = [|(i-1,j-1);(i-1,j);(i-1,j+1);(i,j-1);(i,j+1);(i+1,j-1);(i+1,j);(i+1,j+1)|]
@@ -67,7 +62,7 @@ module utils =
 
         mines, countNeighbors
 
-    let getNewBoard() = 
+    let getEmptyBoard() = 
         let mines, neighbors = setMinesAndGetNeighbors()
 
         let CreateButton i j = 
