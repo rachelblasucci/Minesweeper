@@ -15,7 +15,7 @@ type MinesweeperViewController () =
 
     override this.ViewDidLoad () =
         let rec playGame() =
-            let mines, neighbors = setMinesAndGetNeighbors
+            let mines, neighbors = setMinesAndGetNeighbors()
  
             let CreateButton i j = 
                 let b = new MinesweeperButton(mines.[i,j], neighbors.[i,j])
@@ -26,24 +26,24 @@ type MinesweeperViewController () =
 
 //            let rec ClearTiles i j = 
 //                if (boardTiles.[i,j].SurroundingMines = 0) then
-//                    
-                    //clear more
+//            can't use boardTiles here anyway because can't check for UncoveredButtons.
 
             let MinesweeperButtonClicked = 
                 new EventHandler(fun sender eventargs -> 
                     let ms = sender :?> MinesweeperButton
+                    let v = ms.Superview
                     if (actionMode = Flagging) then //flag or unflag cell
                         if (ms.CurrentImage = UIImage.FromBundle("Flag.png")) then
                             ms.SetImage(null, UIControlState.Normal)
                         else
                             ms.SetImage(UIImage.FromBundle("Flag.png"), UIControlState.Normal)
                     elif (actionMode = Digging && ms.IsMine) then //if you're digging, and you found a mine: death! :( 
-                        ms.BackgroundColor <- UIColor.Red
+                        v.BackgroundColor <- UIColor.Red
                         (new UIAlertView(":(", "YOU LOSE!", null, "Okay", null)).Show()
                         //todo: vibrate phone?
+                        //todo: wait until click ok to call playGame()
                         playGame()
                     else // you're digging, clear the cell
-                        let v = ms.Superview
                         v.WillRemoveSubview(ms)
                         let ub = new UncoveredButton(ms.IsMine, ms.SurroundingMines)
                         ub.Frame <- ms.Frame
@@ -59,6 +59,10 @@ type MinesweeperViewController () =
 
             let CreateSliderView = 
                 let s = new UISegmentedControl(new RectangleF((float32)50.f, (float32)Height*35.f+50.f, (float32)200.f, (float32)50.f))
+                s.InsertSegment(UIImage.FromBundle("Flag.png"), 0, false)
+                s.InsertSegment(UIImage.FromBundle("Bomb.png"), 1, false)
+                s.SelectedSegment <- 1
+                actionMode <- Digging
 
                 let HandleSegmentChanged = 
                     new EventHandler(fun sender eventargs -> 
@@ -67,11 +71,6 @@ type MinesweeperViewController () =
                                         | 0 -> Flagging
                                         | 1 -> Digging
                         )
-
-                s.InsertSegment(UIImage.FromBundle("Flag.png"), 0, false)
-                s.InsertSegment(UIImage.FromBundle("Bomb.png"), 1, false)
-                s.SelectedSegment <- 1
-                actionMode <- Digging
                 s.ValueChanged.AddHandler HandleSegmentChanged
                 s
             

@@ -33,14 +33,16 @@ module utils =
 
         Array.filter filterOutsideBounds indices
 
+    let rand = new Random()
     let mutable countMines = 0
-    let setMinesAndGetNeighbors =  
+
+    let setMinesAndGetNeighbors() =  
+        countMines <- 0
         let mines = 
-            let rand = let r = new Random() in r.NextDouble
             let SetIsMine() = 
                 if (countMines >= NumberOfMines) then
                     false
-                elif (rand() > 0.8) then
+                elif (rand.NextDouble() > 0.75) then
                     countMines <- countMines + 1
                     true
                 else
