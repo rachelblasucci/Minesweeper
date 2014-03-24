@@ -15,18 +15,8 @@ type MinesweeperViewController () =
 
     override this.ViewDidLoad () =
         let rec playGame() =
-            let mines, neighbors = setMinesAndGetNeighbors()
- 
-            let CreateButton i j = 
-                let b = new MinesweeperButton(mines.[i,j], neighbors.[i,j])
-                b.Frame <- new RectangleF((float32)i*35.f+25.f, (float32)j*35.f+25.f, (float32)32.f, (float32)32.f)
-                b
-
-            let boardTiles = Array2D.init Width Height CreateButton
-
-//            let rec ClearTiles i j = 
+//            let rec ClearTiles boardtiles i j = 
 //                if (boardTiles.[i,j].SurroundingMines = 0) then
-//            can't use boardTiles here anyway because can't check for UncoveredButtons.
 
             let MinesweeperButtonClicked = 
                 new EventHandler(fun sender eventargs -> 
@@ -40,16 +30,15 @@ type MinesweeperViewController () =
                     elif (actionMode = Digging && ms.IsMine) then //if you're digging, and you found a mine: death! :( 
                         v.BackgroundColor <- UIColor.Red
                         (new UIAlertView(":(", "YOU LOSE!", null, "Okay", null)).Show()
-                        //todo: vibrate phone?
-                        //todo: wait until click ok to call playGame()
                         playGame()
                     else // you're digging, clear the cell
                         v.WillRemoveSubview(ms)
-                        let ub = new UncoveredButton(ms.IsMine, ms.SurroundingMines)
+                        let ub = new UncoveredButton(ms.IsMine, ms.SurroundingMines, ms.Height, ms.Width, ms.X, ms.Y)
                         ub.Frame <- ms.Frame
                         ub.BackgroundColor <- UIColor.DarkGray
                         if (ub.SurroundingMines = 0) then
                             ub.SetTitle("", UIControlState.Normal)
+//                            ClearTiles boardTiles i j 
                             //todo: keep clearing all 0 cells
                         else 
                             ub.SetTitle(ms.SurroundingMines.ToString(), UIControlState.Normal)
@@ -77,7 +66,8 @@ type MinesweeperViewController () =
             if (this.View.Subviews.Length > 0) then this.View.Subviews.[0].RemoveFromSuperview()
 
             let v = new UIView(new RectangleF(0.f, 0.f, this.View.Bounds.Width, this.View.Bounds.Height))
-            boardTiles 
+            getNewBoard()
+                |> Array2D.map (fun b -> b.Frame <- new RectangleF(b.X, b.Y, b.Width, b.Height); b)
                 |> Array2D.map (fun b -> b.BackgroundColor <- UIColor.LightGray; b)
                 |> Array2D.map (fun b -> b.TouchUpInside.AddHandler MinesweeperButtonClicked; b)
                 |> Array2D.map (fun b -> v.AddSubview b; b)

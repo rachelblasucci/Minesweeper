@@ -14,15 +14,23 @@ module utils =
         | Flagging
         | Digging
 
-    type MinesweeperButton(isMine, countSurrounding) = 
+    type MinesweeperButton(isMine, countSurrounding, width, height, x, y) = 
         inherit UIButton() 
-        member x.SurroundingMines : int = countSurrounding
-        member x.IsMine : bool = isMine
+        member m.SurroundingMines : int = countSurrounding
+        member m.IsMine : bool = isMine
+        member m.Width : float32 = width
+        member m.Height : float32 = height
+        member m.X : float32 = x
+        member m.Y : float32 = y
 
-    type UncoveredButton(isMine, countSurrounding) = 
+    type UncoveredButton(isMine, countSurrounding, width, height, x, y) = 
         inherit UIButton() 
-        member x.SurroundingMines : int = countSurrounding
-        member x.IsMine : bool = isMine
+        member u.SurroundingMines : int = countSurrounding
+        member u.IsMine : bool = isMine
+        member u.Width : float32 = width
+        member u.Height : float32 = height
+        member u.X : float32 = x
+        member u.Y : float32 = y
 
     let filterIndices i j = 
         let indices = [|(i-1,j-1);(i-1,j);(i-1,j+1);(i,j-1);(i,j+1);(i+1,j-1);(i+1,j);(i+1,j+1)|]
@@ -58,4 +66,12 @@ module utils =
             Array2D.init Width Height addNeighbors
 
         mines, countNeighbors
- 
+
+    let getNewBoard() = 
+        let mines, neighbors = setMinesAndGetNeighbors()
+
+        let CreateButton i j = 
+            MinesweeperButton(mines.[i,j], neighbors.[i,j], (float32)32.f, (float32)32.f, (float32)i*35.f+25.f, (float32)j*35.f+25.f)
+
+        let boardTiles = Array2D.init Width Height CreateButton
+        boardTiles
