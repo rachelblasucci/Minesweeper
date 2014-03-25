@@ -54,20 +54,21 @@ type MinesweeperViewController () =
                 let ms = sender :?> MinesweeperButton
                 let v = ms.Superview
                 match actionMode with 
-                | Flagging -> //flag or unflag cell
-                    if (ms.CurrentImage = UIImage.FromBundle("Flag.png")) then
-                        ms.SetImage(null, UIControlState.Normal)
-                    else
-                        ms.SetImage(UIImage.FromBundle("Flag.png"), UIControlState.Normal)
-                | Digging where ms.IsMine -> //if you're digging, and you found a mine: death! :( 
-                    (new UIAlertView(":(", "YOU LOSE!", null, "Okay", null)).Show()
-                    v.RemoveFromSuperview()
-                    playNewGame <| gameBoard()
-                | Digging -> // you're digging, clear the cell
-                    v.WillRemoveSubview(ms)
-                    v.AddSubview <| NewUncoveredButton ms.SurroundingMines ms.Frame
-                    //todo: keep clearing all 0 cells
-                    //todo: if all non-mine cells are cleared, you win.
+                    | Flagging -> //flag or unflag cell
+                        if (ms.CurrentImage = UIImage.FromBundle("Flag.png")) then
+                            ms.SetImage(null, UIControlState.Normal)
+                        else
+                            ms.SetImage(UIImage.FromBundle("Flag.png"), UIControlState.Normal)
+                    | Digging when ms.IsMine -> //if you're digging, and you found a mine: death! :( 
+                        (new UIAlertView(":(", "YOU LOSE!", null, "Okay", null)).Show()
+                        v.RemoveFromSuperview()
+                        playNewGame <| gameBoard()
+                    | Digging -> // you're digging, clear the cell
+                        v.WillRemoveSubview(ms)
+                        v.AddSubview <| NewUncoveredButton ms.SurroundingMines ms.Frame
+                        //todo: keep clearing all 0 cells
+                        //todo: if all non-mine cells are cleared, you win
+             )
 
         and gameBoard() = 
                 getEmptyBoard()
