@@ -35,7 +35,7 @@ type MinesweeperViewController () =
         let ub = new UncoveredButton(mines)
         ub.Frame <- frame
         ub.BackgroundColor <- UIColor.DarkGray
-        if (mines = 0) then
+        if mines = 0 then
             ub.SetTitle("", UIControlState.Normal)
         else 
             ub.SetTitle(mines.ToString(), UIControlState.Normal)
@@ -71,20 +71,20 @@ type MinesweeperViewController () =
                     | Digging -> // clear cell, and all adjacent 0 cells
                         v.WillRemoveSubview(ms)
                         ms.RemoveFromSuperview()
-                        ms.Release()
+                        ms.Dispose()
                         v.AddSubview <| NewClearedMineButton ms.SurroundingMines ms.Frame
-                        let msButtons = v.Subviews
-                                            |> Array.filter (fun o -> (box o) :? MinesweeperButton)
-                                            |> Seq.cast<MinesweeperButton> 
-                                            |> Seq.forall (fun o -> o.IsMine)
+                        let allNonMinesAreCleared = v.Subviews
+                                                        |> Array.filter (fun o -> (box o) :? MinesweeperButton)
+                                                        |> Seq.cast<MinesweeperButton> 
+                                                        |> Seq.forall (fun o -> o.IsMine)
 
-                        if (msButtons) then
+                        if allNonMinesAreCleared then
                             GameOver v ":)" "YOU WIN!"
                 )
 
         and GetNewGameBoard() = 
                 GetClearBoard()
-                    |> Array2D.map (fun b -> b.Frame <- new RectangleF(b.X, b.Y, b.Width, b.Height); b)
+                    |> Array2D.map (fun b -> b.Frame <- new RectangleF((float32)b.i*35.f+25.f, (float32)b.j*35.f+25.f, b.Width, b.Height); b)
                     |> Array2D.map (fun b -> b.TouchUpInside.AddHandler MinesweeperButtonClicked; b)
                     |> Array2D.map (fun b -> b.BackgroundColor <- UIColor.LightGray; b)
                     |> Array2D.map (fun b -> b.SetImage(null, UIControlState.Normal); b)

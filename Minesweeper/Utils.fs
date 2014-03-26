@@ -8,20 +8,20 @@ open MonoTouch.Foundation
 module utils = 
     let Width = 8 
     let Height = 8 
-    let NumberOfMines = 8
+    let NumberOfMines = 10
 
     type ActionMode =
         | Flagging
         | Digging
 
-    type MinesweeperButton(isMine, countSurrounding, width, height, x, y) = 
+    type MinesweeperButton(isMine, countSurrounding, i, j, width, height) = 
         inherit UIButton() 
         member m.SurroundingMines : int = countSurrounding
         member m.IsMine : bool = isMine
         member m.Width : float32 = width
         member m.Height : float32 = height
-        member m.X : float32 = x
-        member m.Y : float32 = y
+        member m.i : int = i
+        member m.j : int = j
 
     type UncoveredButton(countSurrounding) = 
         inherit UIButton() 
@@ -43,9 +43,9 @@ module utils =
         countMines <- 0
         let mines = 
             let SetIsMine() = 
-                if (countMines >= NumberOfMines) then
+                if countMines >= NumberOfMines then
                     false
-                elif (rand.NextDouble() > 0.85) then
+                elif rand.NextDouble() > 0.85 then
                     countMines <- countMines + 1
                     true
                 else
@@ -66,7 +66,7 @@ module utils =
         let mines, neighbors = setMinesAndGetNeighbors()
 
         let CreateButton i j = 
-            new MinesweeperButton(mines.[i,j], neighbors.[i,j], (float32)32.f, (float32)32.f, (float32)i*35.f+25.f, (float32)j*35.f+25.f)
+            new MinesweeperButton(mines.[i,j], neighbors.[i,j], i, j, (float32)32.f, (float32)32.f)
 
         let boardTiles = Array2D.init Width Height CreateButton
         boardTiles
