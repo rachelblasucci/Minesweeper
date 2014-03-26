@@ -8,7 +8,7 @@ open MonoTouch.Foundation
 module utils = 
     let Width = 8 
     let Height = 8 
-    let NumberOfMines = 12
+    let NumberOfMines = 8
 
     type ActionMode =
         | Flagging
@@ -45,7 +45,7 @@ module utils =
             let SetIsMine() = 
                 if (countMines >= NumberOfMines) then
                     false
-                elif (rand.NextDouble() > 0.75) then
+                elif (rand.NextDouble() > 0.85) then
                     countMines <- countMines + 1
                     true
                 else
@@ -62,7 +62,7 @@ module utils =
 
         mines, countNeighbors
 
-    let getEmptyBoard() = 
+    let GetClearBoard() = 
         let mines, neighbors = setMinesAndGetNeighbors()
 
         let CreateButton i j = 

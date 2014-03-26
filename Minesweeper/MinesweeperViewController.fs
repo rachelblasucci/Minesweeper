@@ -1,8 +1,8 @@
-﻿namespace Minesweeper
+﻿#nowarn "40"
+namespace Minesweeper
 
 open System
 open System.Drawing
-
 open MonoTouch.UIKit
 open MonoTouch.Foundation
 open utils
@@ -31,7 +31,7 @@ type MinesweeperViewController () =
         s.ValueChanged.AddHandler HandleSegmentChanged
         s
 
-    let NewUncoveredButton mines frame = 
+    let NewClearedMineButton mines frame = 
         let ub = new UncoveredButton(mines)
         ub.Frame <- frame
         ub.BackgroundColor <- UIColor.DarkGray
@@ -44,7 +44,7 @@ type MinesweeperViewController () =
     override this.ViewDidLoad () =
         this.View.AddSubview NewSliderControl
 
-        let playNewGame (board:MinesweeperButton[,]) = 
+        let StartNewGame (board:MinesweeperButton[,]) = 
             let v = new UIView(new RectangleF(0.f, 0.f, this.View.Bounds.Width, this.View.Bounds.Height))
             board |> Array2D.iter (fun b -> v.AddSubview b) 
             this.View.AddSubview v
@@ -53,40 +53,43 @@ type MinesweeperViewController () =
         let rec MinesweeperButtonClicked =
             let GameOver (view:UIView) heading text = 
                 view.RemoveFromSuperview()
+                view.Dispose()
                 (new UIAlertView(heading, text, null, "Okay", null)).Show()
-                playNewGame <| gameBoard()
+                StartNewGame <| GetNewGameBoard()
 
             new EventHandler(fun sender eventargs -> 
                 let ms = sender :?> MinesweeperButton
                 let v = ms.Superview
                 match actionMode with 
-                    | Flagging -> //flag or unflag cell
+                    | Flagging -> 
                         if (ms.CurrentImage = UIImage.FromBundle("Flag.png")) then
                             ms.SetImage(null, UIControlState.Normal)
                         else
                             ms.SetImage(UIImage.FromBundle("Flag.png"), UIControlState.Normal)
-                    | Digging when ms.IsMine -> //if you're digging, and you found a mine: death! :( 
+                    | Digging when ms.IsMine -> 
                         GameOver v ":(" "YOU LOSE!"
-                    | Digging -> // clear the cell
+                    | Digging -> // clear cell, and all adjacent 0 cells
                         v.WillRemoveSubview(ms)
-                        v.AddSubview <| NewUncoveredButton ms.SurroundingMines ms.Frame
+                        ms.RemoveFromSuperview()
+                        ms.Release()
+                        v.AddSubview <| NewClearedMineButton ms.SurroundingMines ms.Frame
                         let msButtons = v.Subviews
-                                            |> Array.filter (fun o -> o.GetType().ToString().Contains("MinesweeperButton"))
-                                            |> Array.map (fun o -> o :?> MinesweeperButton)
-                                            |> Array.tryFind (fun o -> o.IsMine <> true)
+                                            |> Array.filter (fun o -> (box o) :? MinesweeperButton)
+                                            |> Seq.cast<MinesweeperButton> 
+                                            |> Seq.forall (fun o -> o.IsMine)
 
-                        if (msButtons.IsNone) then
+                        if (msButtons) then
                             GameOver v ":)" "YOU WIN!"
-             )
+                )
 
-        and gameBoard() = 
-                getEmptyBoard()
+        and GetNewGameBoard() = 
+                GetClearBoard()
                     |> Array2D.map (fun b -> b.Frame <- new RectangleF(b.X, b.Y, b.Width, b.Height); b)
                     |> Array2D.map (fun b -> b.TouchUpInside.AddHandler MinesweeperButtonClicked; b)
                     |> Array2D.map (fun b -> b.BackgroundColor <- UIColor.LightGray; b)
                     |> Array2D.map (fun b -> b.SetImage(null, UIControlState.Normal); b)
                     |> Array2D.map (fun b -> b.SetTitle("", UIControlState.Normal); b)
 
-        playNewGame <| gameBoard()
+        StartNewGame <| GetNewGameBoard()
         base.ViewDidLoad ()
     
