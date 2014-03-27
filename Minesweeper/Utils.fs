@@ -27,19 +27,24 @@ module utils =
         inherit UIButton() 
         member u.SurroundingMines : int = countSurrounding
 
-    let filterIndices i j = 
-        let indices = [|(i-1,j-1);(i-1,j);(i-1,j+1);(i,j-1);(i,j+1);(i+1,j-1);(i+1,j);(i+1,j+1)|]
-
+    let filterIndices neighbors i j = 
         let filterOutsideBounds = function 
                                     | x, y when x < 0 || y < 0 || x > Width-1 || y > Height-1 -> false
                                     | _,_ -> true
 
-        Array.filter filterOutsideBounds indices
+        Array.filter filterOutsideBounds neighbors
+
+    let getAllNeighbors i j = 
+        filterIndices [|(i-1,j-1);(i-1,j);(i-1,j+1);(i,j-1);(i,j+1);(i+1,j-1);(i+1,j);(i+1,j+1)|] i j 
+
+    let MinesweeperButtonsOnly (view:UIView) = view.Subviews
+                                                |> Array.filter (fun v -> v :? MinesweeperButton)
+                                                |> Seq.cast<MinesweeperButton> 
 
     let rand = new Random()
     let mutable countMines = 0
 
-    let setMinesAndGetNeighbors() =  
+    let setMinesAndCountNeighbors() =  
         countMines <- 0
         let mines = 
             let SetIsMine() = 
@@ -54,16 +59,15 @@ module utils =
 
         let countNeighbors = 
             let addNeighbors i j = 
-                filterIndices i j 
-                    |> Array.map (fun (x,y) -> mines.[x,y])
-                    |> Array.map (fun x -> match x with | true -> 1 | false -> 0) 
+                getAllNeighbors i j 
+                    |> Array.map (fun (x,y) -> match mines.[x,y] with | true -> 1 | false -> 0)
                     |> Array.sum
             Array2D.init Width Height addNeighbors
 
         mines, countNeighbors
 
     let GetClearBoard() = 
-        let mines, neighbors = setMinesAndGetNeighbors()
+        let mines, neighbors = setMinesAndCountNeighbors()
 
         let CreateButton i j = 
             new MinesweeperButton(mines.[i,j], neighbors.[i,j], i, j, (float32)32.f, (float32)32.f)

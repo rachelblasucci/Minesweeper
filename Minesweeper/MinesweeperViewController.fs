@@ -57,6 +57,25 @@ type MinesweeperViewController () =
                 (new UIAlertView(heading, text, null, "Okay", null)).Show()
                 StartNewGame <| GetNewGameBoard()
 
+            let rec ClearCell (view:UIView) (ms:MinesweeperButton) = 
+                let SwitchButton (msButton:MinesweeperButton) = 
+                    view.WillRemoveSubview(msButton)
+                    msButton.RemoveFromSuperview()
+                    msButton.Dispose()
+                    view.AddSubview <| NewClearedMineButton msButton.SurroundingMines msButton.Frame
+
+                let allNeighbors = getAllNeighbors ms.i ms.j
+
+                SwitchButton ms
+                if ms.IsMine = false && ms.SurroundingMines = 0 then 
+                    let IsCurrentNeighbor (msb:MinesweeperButton) = 
+                        let listed = allNeighbors |> Array.tryFind (fun (i,j) -> i=msb.i && j=msb.j)
+                        listed.IsSome
+
+                    MinesweeperButtonsOnly view
+                        |> Seq.filter IsCurrentNeighbor
+                        |> Seq.iter (fun msb -> ClearCell view msb)
+
             new EventHandler(fun sender eventargs -> 
                 let ms = sender :?> MinesweeperButton
                 let v = ms.Superview
@@ -68,14 +87,14 @@ type MinesweeperViewController () =
                             ms.SetImage(UIImage.FromBundle("Flag.png"), UIControlState.Normal)
                     | Digging when ms.IsMine -> 
                         GameOver v ":(" "YOU LOSE!"
-                    | Digging -> // clear cell, and all adjacent 0 cells
+                    | Digging ->
+                        ClearCell v ms
                         v.WillRemoveSubview(ms)
                         ms.RemoveFromSuperview()
                         ms.Dispose()
                         v.AddSubview <| NewClearedMineButton ms.SurroundingMines ms.Frame
-                        let allNonMinesAreCleared = v.Subviews
-                                                        |> Array.filter (fun o -> (box o) :? MinesweeperButton)
-                                                        |> Seq.cast<MinesweeperButton> 
+
+                        let allNonMinesAreCleared = MinesweeperButtonsOnly v 
                                                         |> Seq.forall (fun o -> o.IsMine)
 
                         if allNonMinesAreCleared then
