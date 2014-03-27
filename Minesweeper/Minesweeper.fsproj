@@ -118,8 +118,6 @@
   <ItemGroup>
     <BundleResource Include="Resources\Bomb.png" />
     <BundleResource Include="Resources\Flag.png" />
-    <BundleResource Include="Bomb.png" />
-    <BundleResource Include="Flag.png" />
-    <BundleResource Include="Axe.png" />
+    <BundleResource Include="Resources\Axe.png" />
   </ItemGroup>
 </Project>
