@@ -50,7 +50,7 @@ module utils =
             let SetIsMine() = 
                 if countMines >= NumberOfMines then
                     false
-                elif rand.NextDouble() > 0.85 then
+                elif rand.NextDouble() > 0.80 then
                     countMines <- countMines + 1
                     true
                 else
