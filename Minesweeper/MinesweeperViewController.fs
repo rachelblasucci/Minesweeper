@@ -14,7 +14,7 @@ type MinesweeperViewController () =
     let mutable actionMode = Digging
 
     let NewSliderControl = 
-        let s = new UISegmentedControl(new RectangleF((float32)50.f, (float32)Height*35.f+50.f, (float32)200.f, (float32)50.f))
+        let s = new UISegmentedControl(new RectangleF((float32)50.f, (float32)Height*(ButtonSize+ButtonPadding)+50.f, (float32)200.f, (float32)50.f))
         s.InsertSegment(UIImage.FromBundle("Flag.png"), 0, false)
         s.InsertSegment(UIImage.FromBundle("Axe.png"), 1, false)
         s.SelectedSegment <- 1
@@ -103,7 +103,7 @@ type MinesweeperViewController () =
 
         and GetNewGameBoard() = 
                 GetClearBoard()
-                    |> Array2D.map (fun b -> b.Frame <- new RectangleF((float32)b.i*35.f+25.f, (float32)b.j*35.f+25.f, b.Width, b.Height); b)
+                    |> Array2D.map (fun b -> b.Frame <- new RectangleF((float32)b.i*(ButtonSize+ButtonPadding)+25.f, (float32)b.j*(ButtonSize+ButtonPadding)+25.f, (float32)ButtonSize, (float32)ButtonSize); b)
                     |> Array2D.map (fun b -> b.TouchUpInside.AddHandler MinesweeperButtonClicked; b)
                     |> Array2D.map (fun b -> b.BackgroundColor <- UIColor.LightGray; b)
                     |> Array2D.map (fun b -> b.SetImage(null, UIControlState.Normal); b)

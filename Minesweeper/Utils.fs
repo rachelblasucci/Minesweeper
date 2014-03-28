@@ -9,17 +9,17 @@ module utils =
     let Width = 8 
     let Height = 8 
     let NumberOfMines = 10
+    let ButtonSize = 32.f
+    let ButtonPadding = 3.f
 
     type ActionMode =
         | Flagging
         | Digging
 
-    type MinesweeperButton(isMine, countSurrounding, i, j, width, height) = 
+    type MinesweeperButton(isMine, countSurrounding, i, j) = 
         inherit UIButton() 
         member m.SurroundingMines : int = countSurrounding
         member m.IsMine : bool = isMine
-        member m.Width : float32 = width
-        member m.Height : float32 = height
         member m.i : int = i
         member m.j : int = j
 
@@ -70,7 +70,7 @@ module utils =
         let mines, neighbors = setMinesAndCountNeighbors()
 
         let CreateButton i j = 
-            new MinesweeperButton(mines.[i,j], neighbors.[i,j], i, j, (float32)32.f, (float32)32.f)
+            new MinesweeperButton(mines.[i,j], neighbors.[i,j], i, j)
 
         let boardTiles = Array2D.init Width Height CreateButton
         boardTiles
