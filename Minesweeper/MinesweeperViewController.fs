@@ -102,12 +102,16 @@ type MinesweeperViewController () =
                 )
 
         and GetNewGameBoard() = 
+                let ChangesForEachButton (mb:MinesweeperButton) = 
+                    mb.Frame <- new RectangleF((float32)mb.i*(ButtonSize+ButtonPadding)+25.f, (float32)mb.j*(ButtonSize+ButtonPadding)+25.f, (float32)ButtonSize, (float32)ButtonSize)
+                    mb.TouchUpInside.AddHandler MinesweeperButtonClicked
+                    mb.BackgroundColor <- UIColor.LightGray
+                    mb.SetImage(null, UIControlState.Normal)
+                    mb.SetTitle("", UIControlState.Normal)
+                    mb
+
                 GetClearBoard()
-                    |> Array2D.map (fun b -> b.Frame <- new RectangleF((float32)b.i*(ButtonSize+ButtonPadding)+25.f, (float32)b.j*(ButtonSize+ButtonPadding)+25.f, (float32)ButtonSize, (float32)ButtonSize); b)
-                    |> Array2D.map (fun b -> b.TouchUpInside.AddHandler MinesweeperButtonClicked; b)
-                    |> Array2D.map (fun b -> b.BackgroundColor <- UIColor.LightGray; b)
-                    |> Array2D.map (fun b -> b.SetImage(null, UIControlState.Normal); b)
-                    |> Array2D.map (fun b -> b.SetTitle("", UIControlState.Normal); b)
+                    |> Array2D.map (fun b -> ChangesForEachButton b)
 
         StartNewGame <| GetNewGameBoard()
         base.ViewDidLoad ()
