@@ -1,9 +1,7 @@
 ﻿namespace Minesweeper
 
 open System
-open System.Drawing
 open MonoTouch.UIKit
-open MonoTouch.Foundation
 
 module utils = 
     let Width = 8 
@@ -29,7 +27,7 @@ module utils =
 
     let filterIndices neighbors i j = 
         let filterOutsideBounds = function 
-                                    | x, y when x < 0 || y < 0 || x > Width-1 || y > Height-1 -> false
+                                    | x,y when x < 0 || y < 0 || x > Width-1 || y > Height-1 -> false
                                     | _,_ -> true
 
         Array.filter filterOutsideBounds neighbors

@@ -42,6 +42,7 @@ type MinesweeperViewController () =
         ub
 
     override this.ViewDidLoad () =
+        base.ViewDidLoad ()
         this.View.AddSubview NewSliderControl
 
         let StartNewGame (board:MinesweeperButton[,]) = 
@@ -114,5 +115,4 @@ type MinesweeperViewController () =
                     |> Array2D.map (fun b -> ChangesForEachButton b)
 
         StartNewGame <| GetNewGameBoard()
-        base.ViewDidLoad ()
     
