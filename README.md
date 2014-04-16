@@ -1,4 +1,4 @@
-Sandbox
+Minesweeper
 =======
 
-Sandbox for testing code and playing around.
+Minesweeper in F# & iOS.
