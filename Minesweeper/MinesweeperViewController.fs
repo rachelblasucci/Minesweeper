@@ -7,10 +7,18 @@ open MonoTouch.UIKit
 open MonoTouch.Foundation
 open utils
 
+type MinesweeperButton(data) =
+    inherit UIButton()
+    member m.Data : MinesweeperData = data
+
+type ClearedButton(data) =
+    inherit UIButton()
+    member m.Data : ClearedData = data
+
 [<Register ("MinesweeperViewController")>]
 type MinesweeperViewController () =
     inherit UIViewController ()
-
+ 
     let mutable actionMode = Digging
 
     let NewSliderControl = 
@@ -32,14 +40,14 @@ type MinesweeperViewController () =
         s
 
     let NewClearedMineButton mines frame = 
-        let ub = new UncoveredButton(mines)
-        ub.Frame <- frame
-        ub.BackgroundColor <- UIColor.DarkGray
+        let cb = new ClearedButton(ClearedData mines)
+        cb.Frame <- frame
+        cb.BackgroundColor <- UIColor.DarkGray
         if mines = 0 then
-            ub.SetTitle("", UIControlState.Normal)
+            cb.SetTitle("", UIControlState.Normal)
         else 
-            ub.SetTitle(mines.ToString(), UIControlState.Normal)
-        ub
+            cb.SetTitle(mines.ToString(), UIControlState.Normal)
+        cb
 
     override this.ViewDidLoad () =
         base.ViewDidLoad ()
@@ -47,10 +55,14 @@ type MinesweeperViewController () =
 
         let StartNewGame (board:MinesweeperButton[,]) = 
             let v = new UIView(new RectangleF(0.f, 0.f, this.View.Bounds.Width, this.View.Bounds.Height))
-            board |> Array2D.iter (fun b -> v.AddSubview b) 
+            board |> Array2D.iter (fun msb -> v.AddSubview msb) 
             this.View.AddSubview v
             this.View.BringSubviewToFront NewSliderControl
 
+        let MinesweeperButtonsOnly (view:UIView) = view.Subviews
+                                                    |> Array.filter (fun v -> v :? MinesweeperButton)
+                                                    |> Seq.cast<MinesweeperButton>
+        
         let rec MinesweeperButtonClicked =
             let GameOver (view:UIView) heading text = 
                 view.RemoveFromSuperview()
@@ -58,23 +70,17 @@ type MinesweeperViewController () =
                 (new UIAlertView(heading, text, null, "Okay", null)).Show()
                 StartNewGame <| GetNewGameBoard()
 
-            let rec ClearCell (view:UIView) (ms:MinesweeperButton) = 
+            let rec ClearCell (view:UIView) (mb:MinesweeperButton) = 
                 let SwitchButton (msButton:MinesweeperButton) = 
                     view.WillRemoveSubview(msButton)
                     msButton.RemoveFromSuperview()
                     msButton.Dispose()
-                    view.AddSubview <| NewClearedMineButton msButton.SurroundingMines msButton.Frame
+                    view.AddSubview <| NewClearedMineButton msButton.Data.SurroundingMines msButton.Frame
+                SwitchButton mb
 
-                let allNeighbors = getAllNeighbors ms.i ms.j
-
-                SwitchButton ms
-                if ms.IsMine = false && ms.SurroundingMines = 0 then 
-                    let IsCurrentNeighbor (msb:MinesweeperButton) = 
-                        let listed = allNeighbors |> Array.tryFind (fun (i,j) -> i=msb.i && j=msb.j)
-                        listed.IsSome
-
+                if mb.Data.IsMine = false && mb.Data.SurroundingMines = 0 then 
                     MinesweeperButtonsOnly view
-                        |> Seq.filter IsCurrentNeighbor
+                        |> Seq.filter (fun mb -> IsCurrentNeighbor mb.Data)
                         |> Seq.iter (fun msb -> ClearCell view msb)
 
             new EventHandler(fun sender eventargs -> 
@@ -86,33 +92,34 @@ type MinesweeperViewController () =
                             ms.SetImage(null, UIControlState.Normal)
                         else
                             ms.SetImage(UIImage.FromBundle("Flag.png"), UIControlState.Normal)
-                    | Digging when ms.IsMine -> 
+                    | Digging when ms.Data.IsMine -> 
                         GameOver v ":(" "YOU LOSE!"
                     | Digging ->
                         ClearCell v ms
                         v.WillRemoveSubview(ms)
                         ms.RemoveFromSuperview()
                         ms.Dispose()
-                        v.AddSubview <| NewClearedMineButton ms.SurroundingMines ms.Frame
+                        v.AddSubview <| NewClearedMineButton ms.Data.SurroundingMines ms.Frame
 
                         let allNonMinesAreCleared = MinesweeperButtonsOnly v 
-                                                        |> Seq.forall (fun o -> o.IsMine)
+                                                        |> Seq.forall (fun o -> o.Data.IsMine)
 
                         if allNonMinesAreCleared then
                             GameOver v ":)" "YOU WIN!"
                 )
 
         and GetNewGameBoard() = 
-                let ChangesForEachButton (mb:MinesweeperButton) = 
-                    mb.Frame <- new RectangleF((float32)mb.i*(ButtonSize+ButtonPadding)+25.f, (float32)mb.j*(ButtonSize+ButtonPadding)+25.f, (float32)ButtonSize, (float32)ButtonSize)
-                    mb.TouchUpInside.AddHandler MinesweeperButtonClicked
-                    mb.BackgroundColor <- UIColor.LightGray
-                    mb.SetImage(null, UIControlState.Normal)
-                    mb.SetTitle("", UIControlState.Normal)
-                    mb
+                let CreateButtons (u:MinesweeperData) = 
+                    let ub = new MinesweeperButton(u)
+                    ub.Frame <- new RectangleF((float32)ub.Data.i*(ButtonSize+ButtonPadding)+25.f, (float32)ub.Data.j*(ButtonSize+ButtonPadding)+25.f, (float32)ButtonSize, (float32)ButtonSize)
+                    ub.TouchUpInside.AddHandler MinesweeperButtonClicked
+                    ub.BackgroundColor <- UIColor.LightGray
+                    ub.SetImage(null, UIControlState.Normal)
+                    ub.SetTitle("", UIControlState.Normal)
+                    ub
 
                 GetClearBoard()
-                    |> Array2D.map (fun b -> ChangesForEachButton b)
+                    |> Array2D.map (fun unknownData -> CreateButtons unknownData)
 
         StartNewGame <| GetNewGameBoard()
     

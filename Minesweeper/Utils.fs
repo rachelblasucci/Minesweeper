@@ -1,7 +1,6 @@
 ﻿namespace Minesweeper
 
 open System
-open MonoTouch.UIKit
 
 module utils = 
     let Width = 8 
@@ -13,16 +12,14 @@ module utils =
     type ActionMode =
         | Flagging
         | Digging
-
-    type MinesweeperButton(isMine, countSurrounding, i, j) = 
-        inherit UIButton() 
+    
+    type MinesweeperData(isMine, countSurrounding, i, j) = 
         member m.SurroundingMines : int = countSurrounding
         member m.IsMine : bool = isMine
         member m.i : int = i
         member m.j : int = j
 
-    type UncoveredButton(countSurrounding) = 
-        inherit UIButton() 
+    type ClearedData(countSurrounding) = 
         member u.SurroundingMines : int = countSurrounding
 
     let filterIndices neighbors i j = 
@@ -34,10 +31,11 @@ module utils =
 
     let getAllNeighbors i j = 
         filterIndices [|(i-1,j-1);(i-1,j);(i-1,j+1);(i,j-1);(i,j+1);(i+1,j-1);(i+1,j);(i+1,j+1)|] i j 
-
-    let MinesweeperButtonsOnly (view:UIView) = view.Subviews
-                                                |> Array.filter (fun v -> v :? MinesweeperButton)
-                                                |> Seq.cast<MinesweeperButton> 
+    
+    let IsCurrentNeighbor (md:MinesweeperData) = 
+        let allNeighbors = getAllNeighbors md.i md.j
+        let listed = allNeighbors |> Array.tryFind (fun (i,j) -> i=md.i && j=md.j)
+        listed.IsSome
 
     let rand = new Random()
     let mutable countMines = 0
@@ -67,8 +65,7 @@ module utils =
     let GetClearBoard() = 
         let mines, neighbors = setMinesAndCountNeighbors()
 
-        let CreateButton i j = 
-            new MinesweeperButton(mines.[i,j], neighbors.[i,j], i, j)
+        let CreateButton i j = MinesweeperData(mines.[i,j], neighbors.[i,j], i, j)
 
         let boardTiles = Array2D.init Width Height CreateButton
         boardTiles
