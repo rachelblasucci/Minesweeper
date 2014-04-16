@@ -32,11 +32,6 @@ module utils =
     let getAllNeighbors i j = 
         filterIndices [|(i-1,j-1);(i-1,j);(i-1,j+1);(i,j-1);(i,j+1);(i+1,j-1);(i+1,j);(i+1,j+1)|] i j 
     
-    let IsCurrentNeighbor (md:MinesweeperData) = 
-        let allNeighbors = getAllNeighbors md.i md.j
-        let listed = allNeighbors |> Array.tryFind (fun (i,j) -> i=md.i && j=md.j)
-        listed.IsSome
-
     let rand = new Random()
     let mutable countMines = 0
 

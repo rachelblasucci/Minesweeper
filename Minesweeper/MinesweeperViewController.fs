@@ -71,6 +71,8 @@ type MinesweeperViewController () =
                 StartNewGame <| GetNewGameBoard()
 
             let rec ClearCell (view:UIView) (mb:MinesweeperButton) = 
+                let allNeighbors = getAllNeighbors mb.Data.i mb.Data.j
+
                 let SwitchButton (msButton:MinesweeperButton) = 
                     view.WillRemoveSubview(msButton)
                     msButton.RemoveFromSuperview()
@@ -79,8 +81,12 @@ type MinesweeperViewController () =
                 SwitchButton mb
 
                 if mb.Data.IsMine = false && mb.Data.SurroundingMines = 0 then 
+                    let IsCurrentNeighbor (md:MinesweeperButton) = 
+                        let listed = allNeighbors |> Array.tryFind (fun (i,j) -> i=md.Data.i && j=md.Data.j)
+                        listed.IsSome
+
                     MinesweeperButtonsOnly view
-                        |> Seq.filter (fun mb -> IsCurrentNeighbor mb.Data)
+                        |> Seq.filter IsCurrentNeighbor
                         |> Seq.iter (fun msb -> ClearCell view msb)
 
             new EventHandler(fun sender eventargs -> 
