@@ -9,8 +9,6 @@
     <RootNamespace>Minesweeper</RootNamespace>
     <IPhoneResourcePrefix>Resources</IPhoneResourcePrefix>
     <AssemblyName>Minesweeper</AssemblyName>
-    <ProductVersion>12.0.0</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhoneSimulator' ">
     <DebugSymbols>true</DebugSymbols>
@@ -119,5 +117,6 @@
     <BundleResource Include="Resources\Bomb.png" />
     <BundleResource Include="Resources\Flag.png" />
     <BundleResource Include="Resources\Axe.png" />
+    <BundleResource Include="Resources\Default-568h%402x.png" />
   </ItemGroup>
 </Project>
