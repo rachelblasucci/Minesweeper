@@ -12,7 +12,10 @@ type AppDelegate () =
 
     // This method is invoked when the application is ready to run.
     override this.FinishedLaunching (app, options) =
-        window.RootViewController <- new MinesweeperViewController ()
+        let n = new UINavigationController (new MinesweeperViewController ())
+        n.NavigationBar.Translucent <- false
+        n.NavigationBar.BarTintColor <- UIColor.DarkGray // Will break on iOS6
+        window.RootViewController <- n
         window.MakeKeyAndVisible ()
         true
 
