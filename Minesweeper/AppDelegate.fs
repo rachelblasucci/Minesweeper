@@ -12,10 +12,7 @@ type AppDelegate () =
 
     // This method is invoked when the application is ready to run.
     override this.FinishedLaunching (app, options) =
-        let n = new UINavigationController (new MinesweeperViewController ())
-        n.NavigationBar.Translucent <- false
-        n.NavigationBar.BarTintColor <- UIColor.DarkGray // Will break on iOS6
-        window.RootViewController <- n
+        window.RootViewController <- new MinesweeperViewController ()
         window.MakeKeyAndVisible ()
         true
 
@@ -24,4 +21,3 @@ module Main =
     let main args =
         UIApplication.Main (args, null, "AppDelegate")
         0
-

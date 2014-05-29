@@ -60,7 +60,7 @@ module utils =
     let GetClearBoard() = 
         let mines, neighbors = setMinesAndCountNeighbors()
 
-        let CreateButton i j = MinesweeperData(mines.[i,j], neighbors.[i,j], i, j)
+        let CreateData i j = MinesweeperData(mines.[i,j], neighbors.[i,j], i, j)
 
-        let boardTiles = Array2D.init Width Height CreateButton
+        let boardTiles = Array2D.init Width Height CreateData
         boardTiles
