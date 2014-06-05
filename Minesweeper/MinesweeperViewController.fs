@@ -15,7 +15,6 @@ type ClearedButton(data) =
     inherit UIButton()
     member m.Data : ClearedData = data
 
-[<Register ("MinesweeperViewController")>]
 type MinesweeperViewController () =
     inherit UIViewController ()
  
