@@ -21,14 +21,15 @@ type MinesweeperViewController () =
     let mutable actionMode = Digging
 
     let NewSliderControl = 
-        let s = new UISegmentedControl(new RectangleF((float32)50.f, (float32)Height*(ButtonSize+ButtonPadding)+50.f, (float32)200.f, (float32)50.f))
+        let s = new UISegmentedControl(
+                    new RectangleF((float32)50.f, (float32)Height*(ButtonSize+ButtonPadding)+50.f, (float32)200.f, (float32)50.f),
+                    SelectedSegment = 1)
         s.InsertSegment(UIImage.FromBundle("Flag.png"), 0, false)
         s.InsertSegment(UIImage.FromBundle("Axe.png"), 1, false)
-        s.SelectedSegment <- 1
         actionMode <- Digging
 
         let HandleSegmentChanged = 
-            new EventHandler(fun sender eventargs -> 
+            new EventHandler(fun sender _ -> 
                 let s = sender :?> UISegmentedControl
                 actionMode <- match s.SelectedSegment with 
                                 | 0 -> Flagging
@@ -39,9 +40,7 @@ type MinesweeperViewController () =
         s
 
     let NewClearedMineButton mines frame = 
-        let cb = new ClearedButton(ClearedData mines)
-        cb.Frame <- frame
-        cb.BackgroundColor <- UIColor.DarkGray
+        let cb = new ClearedButton(ClearedData mines, Frame = frame, BackgroundColor = UIColor.DarkGray)
         if mines = 0 then
             cb.SetTitle("", UIControlState.Normal)
         else 
@@ -88,7 +87,7 @@ type MinesweeperViewController () =
                         |> Seq.filter IsCurrentNeighbor
                         |> Seq.iter (fun msb -> ClearCell view msb)
 
-            new EventHandler(fun sender eventargs -> 
+            new EventHandler(fun sender _ -> 
                 let ms = sender :?> MinesweeperButton
                 let v = ms.Superview
                 match actionMode with 
@@ -115,12 +114,13 @@ type MinesweeperViewController () =
 
         and GetNewGameBoard() = 
                 let CreateButtons (u:MinesweeperData) = 
-                    let ub = new MinesweeperButton(u)
-                    ub.Frame <- new RectangleF((float32)ub.Data.i*(ButtonSize+ButtonPadding)+25.f, (float32)ub.Data.j*(ButtonSize+ButtonPadding)+25.f, (float32)ButtonSize, (float32)ButtonSize)
-                    ub.TouchUpInside.AddHandler MinesweeperButtonClicked
-                    ub.BackgroundColor <- UIColor.LightGray
+                    let ub = new MinesweeperButton(
+                                u, 
+                                Frame = new RectangleF((float32)u.i*(ButtonSize+ButtonPadding)+25.f, (float32)u.j*(ButtonSize+ButtonPadding)+25.f, (float32)ButtonSize, (float32)ButtonSize),
+                                BackgroundColor = UIColor.LightGray)
                     ub.SetImage(null, UIControlState.Normal)
                     ub.SetTitle("", UIControlState.Normal)
+                    ub.TouchUpInside.AddHandler MinesweeperButtonClicked
                     ub
 
                 GetClearBoard()
