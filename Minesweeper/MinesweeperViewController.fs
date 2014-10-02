@@ -21,11 +21,10 @@ type MinesweeperViewController () =
     let mutable actionMode = Digging
 
     let NewSliderControl = 
-        let s = new UISegmentedControl(
-                    new RectangleF((float32)50.f, (float32)Height*(ButtonSize+ButtonPadding)+50.f, (float32)200.f, (float32)50.f),
-                    SelectedSegment = 1)
+        let s = new UISegmentedControl(new RectangleF((float32)50.f, (float32)Height*(ButtonSize+ButtonPadding)+50.f, (float32)200.f, (float32)50.f))
         s.InsertSegment(UIImage.FromBundle("Flag.png"), 0, false)
         s.InsertSegment(UIImage.FromBundle("Axe.png"), 1, false)
+        s.SelectedSegment <- 1
         actionMode <- Digging
 
         let HandleSegmentChanged = 
