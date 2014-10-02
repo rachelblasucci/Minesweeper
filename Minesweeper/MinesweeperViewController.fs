@@ -20,6 +20,7 @@ type MinesweeperViewController () =
  
     let mutable actionMode = Digging
 
+    /// Creates Slider Control
     let NewSliderControl = 
         let s = new UISegmentedControl(new RectangleF((float32)50.f, (float32)Height*(ButtonSize+ButtonPadding)+50.f, (float32)200.f, (float32)50.f))
         s.InsertSegment(UIImage.FromBundle("Flag.png"), 0, false)
@@ -38,12 +39,13 @@ type MinesweeperViewController () =
         s.ValueChanged.AddHandler HandleSegmentChanged
         s
 
-    let NewClearedMineButton mines frame = 
-        let cb = new ClearedButton(ClearedData mines, Frame = frame, BackgroundColor = UIColor.DarkGray)
-        if mines = 0 then
+    /// Creates a new cleared mine button using a specifc minesweeper data button
+    let NewClearedMineButton (msButton:MinesweeperButton) = 
+        let cb = new ClearedButton(ClearedData msButton.Data.SurroundingMines, Frame = msButton.Frame, BackgroundColor = UIColor.DarkGray)
+        if msButton.Data.SurroundingMines = 0 then
             cb.SetTitle("", UIControlState.Normal)
         else 
-            cb.SetTitle(mines.ToString(), UIControlState.Normal)
+            cb.SetTitle(msButton.Data.SurroundingMines.ToString(), UIControlState.Normal)
         cb
 
     override this.ViewDidLoad () =
@@ -67,15 +69,16 @@ type MinesweeperViewController () =
                 (new UIAlertView(heading, text, null, "Okay", null)).Show()
                 StartNewGame <| GetNewGameBoard()
 
-            let rec ClearCell (view:UIView) (mb:MinesweeperButton) = 
-                let allNeighbors = getAllNeighbors mb.Data.i mb.Data.j
+            let SwitchButton (view:UIView) (msButton:MinesweeperButton) = 
+                view.WillRemoveSubview(msButton)
+                msButton.RemoveFromSuperview()
+                msButton.Dispose()
+                view.AddSubview <| NewClearedMineButton msButton
 
-                let SwitchButton (msButton:MinesweeperButton) = 
-                    view.WillRemoveSubview(msButton)
-                    msButton.RemoveFromSuperview()
-                    msButton.Dispose()
-                    view.AddSubview <| NewClearedMineButton msButton.Data.SurroundingMines msButton.Frame
-                SwitchButton mb
+            let rec ClearCell (view:UIView) (mb:MinesweeperButton) = 
+                let allNeighbors = GetAllNeighbors mb.Data.i mb.Data.j
+
+                SwitchButton view mb
 
                 if mb.Data.IsMine = false && mb.Data.SurroundingMines = 0 then 
                     let IsCurrentNeighbor (md:MinesweeperButton) = 
@@ -99,10 +102,7 @@ type MinesweeperViewController () =
                         GameOver v ":(" "YOU LOSE!"
                     | Digging ->
                         ClearCell v ms
-                        v.WillRemoveSubview(ms)
-                        ms.RemoveFromSuperview()
-                        ms.Dispose()
-                        v.AddSubview <| NewClearedMineButton ms.Data.SurroundingMines ms.Frame
+                        SwitchButton v ms
 
                         let allNonMinesAreCleared = MinesweeperButtonsOnly v 
                                                         |> Seq.forall (fun o -> o.Data.IsMine)

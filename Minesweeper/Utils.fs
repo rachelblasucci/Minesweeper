@@ -22,20 +22,23 @@ module utils =
     type ClearedData(countSurrounding) = 
         member u.SurroundingMines : int = countSurrounding
 
-    let filterIndices neighbors i j = 
+    /// Filters indices outside array bounds
+    let private filterIndices neighbors i j = 
         let filterOutsideBounds = function 
                                     | x,y when x < 0 || y < 0 || x > Width-1 || y > Height-1 -> false
                                     | _,_ -> true
 
         Array.filter filterOutsideBounds neighbors
 
-    let getAllNeighbors i j = 
+    /// Gets all neighbors for a cell. Max 8, because we filter impossible options. 
+    let GetAllNeighbors i j = 
         filterIndices [|(i-1,j-1);(i-1,j);(i-1,j+1);(i,j-1);(i,j+1);(i+1,j-1);(i+1,j);(i+1,j+1)|] i j 
     
     let rand = new Random()
     let mutable countMines = 0
 
-    let setMinesAndCountNeighbors() =  
+    /// Returns two 2D arrays. Mines: whether or not cell is a mine, and Neighbors: total count for how many neighboring cells contain mines. 
+    let private setMinesAndCountNeighbors() =  
         countMines <- 0
         let mines = 
             let SetIsMine() = 
@@ -50,13 +53,14 @@ module utils =
 
         let countNeighbors = 
             let addNeighbors i j = 
-                getAllNeighbors i j 
+                GetAllNeighbors i j 
                     |> Array.map (fun (x,y) -> match mines.[x,y] with | true -> 1 | false -> 0)
                     |> Array.sum
             Array2D.init Width Height addNeighbors
 
         mines, countNeighbors
 
+    /// Calls setMinesAndCountNeighbors(), combines that info to return a 2D array of MinesweeperData. 
     let GetClearBoard() = 
         let mines, neighbors = setMinesAndCountNeighbors()
 
