@@ -102,7 +102,7 @@ type MinesweeperViewController () =
                 let v = ms.Superview
                 match actionMode with 
                     | Flagging -> 
-                        if (ms.CurrentImage = UIImage.FromBundle("Flag.png")) then
+                        if (ms.CurrentImage <> null) then
                             ms.SetImage(null, UIControlState.Normal)
                         else
                             ms.SetImage(UIImage.FromBundle("Flag.png"), UIControlState.Normal)
@@ -118,6 +118,7 @@ type MinesweeperViewController () =
                         if allNonMinesAreCleared then
                             GameOver v ":)" "YOU WIN!"
                 )
+
         /// Creates actual MinesweeperButtons from MinesweeperData array
         and GetNewGameBoard() = 
                 let CreateButtons (u:MinesweeperData) = 
