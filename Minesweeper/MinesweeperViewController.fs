@@ -21,30 +21,30 @@ type MinesweeperViewController () =
     let mutable actionMode = Digging
 
     /// Creates Slider Control
-    let NewSliderControl = 
+    let NewSliderControl =
         let s = new UISegmentedControl(new RectangleF((float32)50.f, (float32)Height*(ButtonSize+ButtonPadding)+50.f, (float32)200.f, (float32)50.f))
         s.InsertSegment(UIImage.FromBundle("Flag.png"), 0, false)
         s.InsertSegment(UIImage.FromBundle("Axe.png"), 1, false)
         s.SelectedSegment <- 1
         actionMode <- Digging
 
-        let HandleSegmentChanged = 
-            new EventHandler(fun sender _ -> 
+        let HandleSegmentChanged =
+            new EventHandler(fun sender _ ->
                 let s = sender :?> UISegmentedControl
-                actionMode <- match s.SelectedSegment with 
+                actionMode <- match s.SelectedSegment with
                                 | 0 -> Flagging
                                 | 1 -> Digging
-                                | _ -> failwith "No such state!" 
+                                | _ -> failwith "No such state!"
                 )
         s.ValueChanged.AddHandler HandleSegmentChanged
         s
 
     /// Creates a new cleared mine button using a specifc minesweeper data button
-    let NewClearedButton (msButton:MinesweeperButton) = 
+    let NewClearedButton (msButton:MinesweeperButton) =
         let cb = new ClearedButton(ClearedData msButton.Data.SurroundingMines, Frame = msButton.Frame, BackgroundColor = UIColor.DarkGray)
         if msButton.Data.SurroundingMines = 0 then
             cb.SetTitle("", UIControlState.Normal)
-        else 
+        else
             cb.SetTitle(msButton.Data.SurroundingMines.ToString(), UIControlState.Normal)
         cb
 
@@ -53,9 +53,9 @@ type MinesweeperViewController () =
         this.View.AddSubview NewSliderControl
 
         /// Takes a 2D array of MinesweeperButtons. Creates a subview, adds each button to it, then ensures the slider is on top. 
-        let StartNewGame (board:MinesweeperButton[,]) = 
+        let StartNewGame (board:MinesweeperButton[,]) =
             let v = new UIView(new RectangleF(0.f, 0.f, this.View.Bounds.Width, this.View.Bounds.Height))
-            board |> Array2D.iter (fun msb -> v.AddSubview msb) 
+            board |> Array2D.iter (fun msb -> v.AddSubview msb)
             this.View.AddSubview v
             this.View.BringSubviewToFront NewSliderControl
 
